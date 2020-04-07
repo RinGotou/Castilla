@@ -1,7 +1,7 @@
 #pragma once
-#include "dawn.common.h"
+#include "castilla.common.h"
 
-namespace dawn {
+namespace castilla {
   using Channel = int;
 
   class Music {

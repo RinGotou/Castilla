@@ -1,6 +1,6 @@
-#include "dawn.common.h"
+#include "castilla.common.h"
 
-namespace dawn {
+namespace castilla {
   bool &GetAudioSubsystemState() {
     static std::mutex state_lock;
     std::lock_guard<std::mutex> guard(state_lock);

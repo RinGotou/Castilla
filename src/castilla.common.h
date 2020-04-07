@@ -1,6 +1,3 @@
-/*
-  Common header of Dawn
-*/
 #pragma once
 #include <SDL.h>
 #include <SDL_image.h>
@@ -38,7 +35,7 @@
 #define DAWN_VERSION "0.1 Alpha"
 #define DEFAULT_DEPTH 32
 
-namespace dawn {
+namespace castilla {
   using std::deque;
   using std::string;
   using std::wstring;

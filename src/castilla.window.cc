@@ -1,6 +1,6 @@
-#include "dawn.window.h"
+#include "castilla.window.h"
 
-namespace dawn {
+namespace castilla {
   FlipOption ProduceFlipOption(double angle, int x, int y, SDL_RendererFlip mode) {
     FlipOption result = { angle, mode, SDL_Point{ x, y } };
     return result;

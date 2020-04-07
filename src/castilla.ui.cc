@@ -1,6 +1,6 @@
-#include "dawn.ui.h"
+#include "castilla.ui.h"
 
-namespace dawn {
+namespace castilla {
   bool Element::Draw(SDL_Renderer *renderer) {
     return SDL_RenderCopy(renderer, texture_, &src_, &dest_) == 0;
   }

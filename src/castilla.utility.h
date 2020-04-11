@@ -8,9 +8,6 @@
 #include <unordered_set>
 
 namespace castilla {
-  // TODO: RCPointer
-  // TODO: RCPointerView
-
   // For life cycle manager family (LifecycleGuard and etc)
   struct _CounterBase {
     std::atomic_int32_t count;

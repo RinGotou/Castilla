@@ -37,7 +37,7 @@ namespace castilla {
     SDL_Point point;
   };
 
-  class BasicWindow {
+  class BasicWindow : public IntrusiveCounter<BasicWindow> {
   protected:
     SDL_Window *window_;
     SDL_Renderer *renderer_;
@@ -149,7 +149,7 @@ namespace castilla {
 
 
   //TODO:delegator mode
-  class Font {
+  class Font : public IntrusiveCounter<Font> {
   protected:
     TTF_Font *ptr_;
 
@@ -172,7 +172,9 @@ namespace castilla {
     bool Good() const { return ptr_ != nullptr; }
   };
 
-  class Texture {
+  class Texture : 
+    public IntrusiveCounter<Texture>,
+    public LifeCycleGuard<Texture> {
   protected:
     SDL_Texture *ptr_;
     int width_;

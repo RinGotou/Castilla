@@ -19,6 +19,8 @@
 #include <cstdio>
 #endif
 
+#include "castilla.utility.h"
+
 //for Windows(MSVC) environment
 #ifdef _WIN32
 #pragma comment(lib,"SDL2.lib")

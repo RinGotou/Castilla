@@ -17,7 +17,7 @@ namespace castilla {
     short view_percentage;
   };
 
-  class Element {
+  class Element : public IntrusiveCounter<Element> {
   protected:
     SDL_Rect src_;
     SDL_Rect dest_;

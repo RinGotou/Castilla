@@ -4,7 +4,7 @@
 namespace castilla {
   using Channel = int;
 
-  class Music {
+  class Music : public IntrusiveCounter<Music> {
   protected:
     Mix_Music *ptr_;
 
@@ -32,7 +32,7 @@ namespace castilla {
     bool Good() const { return ptr_ != nullptr; }
   };
 
-  class SoundEffect {
+  class SoundEffect : public IntrusiveCounter<SoundEffect> {
   protected:
     Mix_Chunk *ptr_;
 
@@ -51,7 +51,4 @@ namespace castilla {
       return Mix_PlayChannelTimed(channel, ptr_, loop, tick);
     }
   };
-
-  using ManagedMusic = shared_ptr<Music>;
-  using ManagedSoundEffect = shared_ptr<SoundEffect>;
 }

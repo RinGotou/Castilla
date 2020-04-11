@@ -20,7 +20,6 @@
 #endif
 
 #include "castilla.utility.h"
-#include <toml.hpp>
 
 //for Windows(MSVC) environment
 #ifdef _WIN32
@@ -35,10 +34,22 @@
 #pragma comment(lib,"SDL2_ttf.lib")
 #endif
 
-namespace castilla {
-  //TODO: window management storage
+#define DAWN_VERSION "0.1 Alpha"
+#define DEFAULT_DEPTH 32
 
-  struct AudioInitSpec {
+namespace castilla {
+  using std::deque;
+  using std::string;
+  using std::wstring;
+  using std::shared_ptr;
+  using std::make_shared;
+  using std::map;
+  using std::pair;
+
+  class PlainWindow;
+
+  using WindowManagementStorage = std::unordered_map<Uint32, PlainWindow *>;
+  struct AudioOption {
     int frequency;
     uint16_t format;
     int channels;
@@ -46,25 +57,22 @@ namespace castilla {
     int flags;
   };
 
-  constexpr AudioInitSpec kDefaultAudioSpec = {
-  48000,
-  MIX_DEFAULT_FORMAT,
-  MIX_DEFAULT_CHANNELS,
-  2048,
-  MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG
+  const AudioOption kDefaultAudioOpt = {
+    44100,
+    MIX_DEFAULT_FORMAT,
+    MIX_DEFAULT_CHANNELS,
+    2048,
+    MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG
   };
 
-  enum class InitErrorVariant { 
-    MainLibraryFailed, 
-    MixInitFailed, 
-    OpenAudioFailed,
-    OK
-  };
-
-  InitErrorVariant EnvironmentSetup(const AudioInitSpec &audio = kDefaultAudioSpec);
+  int EnvironmentSetup(AudioOption audio = kDefaultAudioOpt);
   void EnvironmentCleanup();
   bool IsAudioSubsystemLoaded();
+  void RegisterWindow(PlainWindow *window, Uint32 id);
+  bool DisposeWindow(Uint32 id);
+  PlainWindow *GetWindowById(Uint32 id);
+  WindowManagementStorage &GetWindowMgmtStorage();
 
-  std::wstring s2ws(const std::string &s);
-  std::string ws2s(const std::wstring &s);
+  wstring s2ws(const string &s);
+  string ws2s(const wstring &s);
 }

@@ -146,6 +146,10 @@ namespace castilla {
     constexpr bool operator==(const ProtectedPointer<T> &rhs) { return ptr_ == rhs.ptr_; }
     constexpr bool operator==(const ProtectedPointer<T> &&rhs) { return ptr_ == rhs.ptr_; }
     constexpr bool operator==(const PointerType rhs) { return ptr_ == rhs; }
+
+    void Destroy() {
+      delete ptr_;
+    }
   };
 
   // Intrusive counter for IntrusivePointer.

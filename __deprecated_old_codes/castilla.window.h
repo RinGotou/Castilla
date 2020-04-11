@@ -21,15 +21,8 @@ namespace castilla {
     int y;
     uint32_t flags;
     string title;
-
-    WindowOption() :
-      width(1024),
-      height(768),
-      x(SDL_WINDOWPOS_CENTERED),
-      y(SDL_WINDOWPOS_CENTERED),
-      flags(SDL_WINDOW_ALLOW_HIGHDPI),
-      title() {}
   };
+
 
   struct FlipOption {
     double angle_value;
@@ -37,7 +30,7 @@ namespace castilla {
     SDL_Point point;
   };
 
-  class BasicWindow : public IntrusiveCounter<BasicWindow> {
+  class BasicWindow {
   protected:
     SDL_Window *window_;
     SDL_Renderer *renderer_;
@@ -214,13 +207,13 @@ namespace castilla {
       Init(text, font, renderer, color, wrap_length);
     }
 
-    Texture(Texture &rhs) {
+    Texture(Texture &rhs) : ptr_(nullptr), width_(0), height_(0) {
       std::swap(ptr_, rhs.ptr_);
       std::swap(width_, rhs.width_);
       std::swap(height_, rhs.height_);
     }
 
-    Texture(Texture &&rhs) {
+    Texture(Texture &&rhs) : ptr_(nullptr), width_(0), height_(0) {
       std::swap(ptr_, rhs.ptr_);
       std::swap(width_, rhs.width_);
       std::swap(height_, rhs.height_);

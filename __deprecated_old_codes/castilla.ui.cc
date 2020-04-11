@@ -2,7 +2,7 @@
 
 namespace castilla {
   bool Element::Draw(SDL_Renderer *renderer) {
-    return SDL_RenderCopy(renderer, texture_, &src_, &dest_) == 0;
+    return SDL_RenderCopy(renderer, texture_->Get(), &src_, &dest_) == 0;
   }
 
   NamedElement *ElementLayer::FindNamedElementByOrder(int64_t order) {
@@ -75,7 +75,7 @@ namespace castilla {
     auto *element = FindElement(id);
 
     if (element != nullptr) {
-      auto &dest = element->GetDestInfo();
+      auto &dest = element->ExposeDestRectange();
       dest.x = point.x;
       dest.y = point.y;
     }
@@ -93,7 +93,7 @@ namespace castilla {
     auto *element = FindElement(id);
 
     if (element != nullptr) {
-      auto &dest = element->GetDestInfo();
+      auto &dest = element->ExposeDestRectange();
       dest.w = width;
       dest.h = height;
     }
@@ -111,7 +111,7 @@ namespace castilla {
     auto *element = FindElement(id);
 
     if (element != nullptr) {
-      auto &elem_dest = element->GetDestInfo();
+      auto &elem_dest = element->ExposeDestRectange();
       elem_dest = dest;
     }
     else {
@@ -128,7 +128,7 @@ namespace castilla {
     auto *element = FindElement(id);
 
     if (element != nullptr) {
-      auto &src = element->GetSrcInfo();
+      auto &src = element->ExposeSrcRectange();
       src = cropper;
     }
     else {
@@ -145,7 +145,7 @@ namespace castilla {
     SDL_Point result{ 0, 0 };
 
     if (element != nullptr) {
-      auto &dest = element->GetDestInfo();
+      auto &dest = element->ExposeDestRectange();
       result.x = dest.x;
       result.y = dest.y;
     }
@@ -158,7 +158,7 @@ namespace castilla {
     SDL_Point result{ 0, 0 };
 
     if (element != nullptr) {
-      auto &dest = element->GetDestInfo();
+      auto &dest = element->ExposeDestRectange();
       result.x = dest.w;
       result.y = dest.h;
     }
@@ -171,7 +171,7 @@ namespace castilla {
     SDL_Rect result{};
 
     if (element != nullptr) {
-      result = element->GetDestInfo();
+      result = element->ExposeDestRectange();
     }
 
     return result;
@@ -182,7 +182,7 @@ namespace castilla {
     SDL_Rect result{};
 
     if (element != nullptr) {
-      result = element->GetSrcInfo();
+      result = element->ExposeSrcRectange();
     }
 
     return result;
@@ -193,7 +193,7 @@ namespace castilla {
     auto *element = FindElement(id);
 
     if (element != nullptr) {
-      result = InRange(element->GetDestInfo(), point);
+      result = InRange(element->ExposeDestRectange(), point);
     }
     else {
       result = false;
@@ -231,7 +231,7 @@ namespace castilla {
     for (auto &layer : elements_) {
       auto &drawing_vec = layer.second.drawing_vec;
       for (size_t index = 0; index < drawing_vec.size(); index += 1) {
-        if (InRange(drawing_vec[index]->GetDestInfo(), point)) {
+        if (InRange(drawing_vec[index]->ExposeDestRectange(), point)) {
           result = layer.second.FindNamedElementByOrder(index);
           break;
         }
@@ -325,7 +325,7 @@ namespace castilla {
       it = layer.second.find(id);
 
       if (it != layer.second.end()) {
-        it->second.SetTexture(texture.Get());
+        it->second.SetTexture(&texture);
         result = true;
         break;
       }

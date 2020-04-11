@@ -1,40 +1,33 @@
 #include "castilla.common.h"
 
 namespace castilla {
-  bool &GetAudioSubsystemState() {
-    static std::mutex state_lock;
-    std::lock_guard<std::mutex> guard(state_lock);
-    static bool state = false;
-    return state;
+  bool &ExposeAudioSubsystemState() {
+    static std::mutex gate;
+    std::lock_guard<std::mutex> guard(gate);
+    static bool loaded = false;
+    return loaded;
   }
 
-  WindowManagementStorage &GetWindowMgmtStorage() {
-    static std::mutex state_lock;
-    std::lock_guard<std::mutex> guard(state_lock);
-    static WindowManagementStorage storage;
-    return storage;
-  }
-
-  int EnvironmentSetup(AudioOption audio) {
+  InitErrorVariant EnvironmentSetup(const AudioInitSpec &audio) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-      return -1;
+      return InitErrorVariant::MainLibraryFailed;
     }
 
     if (Mix_Init(audio.flags) == 0) {
-      return -2;
+      return InitErrorVariant::MixInitFailed;
     }
 
     if (Mix_OpenAudio(
-      audio.frequency, 
-      audio.format, 
-      audio.channels, 
+      audio.frequency,
+      audio.format,
+      audio.channels,
       audio.chunksize) != 0) {
-      return -3;
+      return InitErrorVariant::OpenAudioFailed;
     }
 
-    GetAudioSubsystemState() = true;
+    ExposeAudioSubsystemState() = true;
 
-    return 0;
+    return InitErrorVariant::OK;
   }
 
   void EnvironmentCleanup() {
@@ -43,58 +36,33 @@ namespace castilla {
     Mix_CloseAudio();
     Mix_Quit();
 
-    GetAudioSubsystemState() = false;
+    ExposeAudioSubsystemState() = false;
 
     SDL_Quit();
   }
 
   bool IsAudioSubsystemLoaded() {
-    return GetAudioSubsystemState();
+    return ExposeAudioSubsystemState();
   }
 
-  void RegisterWindow(PlainWindow *window, Uint32 id) {
-    auto &storage = GetWindowMgmtStorage();
-    storage.insert(std::make_pair(id, window));
-  }
-
-  bool DisposeWindow(Uint32 id) {
-    auto &storage = GetWindowMgmtStorage();
-    auto it = storage.find(id);
-    bool result = false;
-
-    if (it != storage.end()) {
-      storage.erase(it);
-      result = true;
-    }
-
-    return result;
-  }
-
-  PlainWindow *GetWindowById(Uint32 id) {
-    auto &storage = GetWindowMgmtStorage();
-    auto it = storage.find(id);
-    if (it != storage.end()) return it->second;
-    return nullptr;
-  }
-
-  wstring s2ws(const string &s) {
-    if (s.empty()) return wstring();
+  std::wstring s2ws(const std::string &s) {
+    if (s.empty()) return std::wstring();
     size_t length = s.size();
     //wchar_t *wc = (wchar_t *)malloc(sizeof(wchar_t) * (length + 2));
     wchar_t *wc = (wchar_t *)calloc(length + 64, sizeof(wchar_t));
     auto res = mbstowcs(wc, s.data(), s.length() + 1);
-    wstring str(wc);
+    std::wstring str(wc);
     free(wc);
     return str;
   }
 
-  string ws2s(const wstring &s) {
-    if (s.empty()) return string();
+  std::string ws2s(const std::wstring &s) {
+    if (s.empty()) return std::string();
     size_t length = s.size();
     //char *c = (char *)malloc(sizeof(char) * (length + 1) * 2);
     char *c = (char *)calloc((length + 64) * 2, sizeof(char));
     auto res = wcstombs(c, s.data(), (length + 64) * 2);
-    string result(c);
+    std::string result(c);
     free(c);
     return result;
   }

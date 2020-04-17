@@ -3,14 +3,15 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
-#include <deque>
+#include <list>
 #include <string>
+#include <string_view>
 #include <utility>
-#include <memory>
 #include <thread>
 #include <mutex>
 #include <map>
 #include <unordered_map>
+#include <optional>
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif
